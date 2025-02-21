@@ -17,4 +17,4 @@ the following way:
 
 #### CFT ID
 
-The CFT-ID is the hash at test url. i.e. `https://[CFT-ID].ctf.hacker101.com/login`
+The CFT-ID is the hash of the test url. i.e. `https://[CFT-ID].ctf.hacker101.com/login`
