@@ -1,4 +1,4 @@
-# hacker101-cft
+# hacker101-ctf
 Some utilities for "capture the flag" tests at hacker101.
 
 ### Requirements
@@ -13,8 +13,8 @@ You can install proper modules with: `pip install -r requirements.txt`
 To capture Flag2 you must get the admin credentials with sqli-extractor.py in
 the following way:
 
-`python sqli-extractor.py [CFT-ID]`
+`python sqli-extractor.py [CTF-ID]`
 
-#### CFT ID
+#### CTF ID
 
-The CFT-ID is the hash of the test url. i.e. `https://[CFT-ID].ctf.hacker101.com/login`
+The CTF-ID is the hash of the test url. i.e. `https://[CTF-ID].ctf.hacker101.com/login`
