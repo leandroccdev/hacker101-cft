@@ -10,13 +10,14 @@ Stored XSS 1: ^FLAG^0ec0cf27b597a2f5f976a7c260031e1a3f355c5dcba5bc9a012d70550f9c
 Stored XSS 2: ^FLAG^d01d5e593c759398bdf0a63d8abfefff6d94c87337644afc7637b7f2b81c9418$FLAG$
 SQLi: FLAG^6e95e97eb4bc6738b440562a9992f418449c11d172851a9b2323466ace0a8ccd$FLAG$
 Broken Access Control,IDOR,Unauthorized Access: ^FLAG^ef1e891cb8ed7596cdbefe17afc9a2e4ac865eb368c084e5887555caf11f9b1b$FLAG$
-
 ```
 
 URL de la máquina temporal: https://c2185aa9c020ec27aed9835fe5d78864.ctf.hacker101.com/
 
 Revisión de DNS
 ```bash
+<!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
+
 dig short c2185aa9c020ec27aed9835fe5d78864.ctf.hacker101.com
 
 ; <<>> DiG 9.20.11 <<>> short c2185aa9c020ec27aed9835fe5d78864.ctf.hacker101.com
@@ -92,12 +93,15 @@ Nmap done: 2 IP addresses (2 hosts up) scanned in 63.23 seconds
 ```
 
 **Observaciones**
+
 Se observa un servicio en el puerto 443 llamado **OpenResty** en su versión `1.27.1.2`.
 
 **OpenResty**
+
 OpenResty v1.27.1.2 es una versión reciente y formal (publicada el 31 de marzo de 2025, anunciada el 30 de mayo de 2025) de la plataforma web OpenResty, que está basada en NGINX y LuaJIT.
 
 **¿Qué es OpenResty?**
+
 OpenResty es una plataforma web de alto rendimiento que integra:
 
 - Un núcleo de NGINX optimizado
@@ -122,6 +126,7 @@ Permite ejecutar lógica de backend escrita en Lua directamente dentro del servi
 - - Correcciones en manejo de BC_VARG, getfenv()/setfenv(), fugas de archivos, errores en MIPS64/ARM64, entre otros.
 
 **Vulnerabilidades conocidas potenciales para OpenResty**
+
 URL: https://app.opencve.io/cve/?vendor=openresty
 
 - [CVE-2024-33452](https://app.opencve.io/cve/CVE-2024-33452): Severidad 7.7 Alta
@@ -131,7 +136,9 @@ URL: https://app.opencve.io/cve/?vendor=openresty
 - [CVE-2018-9230](https://app.opencve.io/cve/CVE-2018-9230): Severidad [No Disponible]
 
 **Escaneo completo de puertos con nmap**
+
 **IP:** 52.32.177.115
+
 **Dominio**: ec2-52-32-177-115.us-west-2.compute.amazonaws.com
 
 ```bash
@@ -149,6 +156,7 @@ Nmap done: 1 IP address (1 host up) scanned in 424.81 seconds
 ```
 
 **IP:** 35.163.206.9
+
 **Dominio:** ec2-35-163-206-90.us-west-2.compute.amazonaws.com
 
 ```bash
@@ -242,6 +250,7 @@ Server: openresty/1.27.1.2
 ```
 
 **Flag encontrada**
+
 `^FLAG^d01d5e593c759398bdf0a63d8abfefff6d94c87337644afc7637b7f2b81c9418$FLAG$`
 
 **Nota:** La flag se encuentra después de haber ingresado un payload XSS en los campos de la página 1.
@@ -302,7 +311,9 @@ Server: openresty/1.27.1.2
 ```
 
 **Fuzzing de directorios y archivos**
+
 **Herramienta:** gobuster
+
 **Diccionario:** `seclist/Discovery/Web-Content/common.txt`
 
 ```bash
@@ -312,7 +323,9 @@ gobuster dir -u "https://c2185aa9c020ec27aed9835fe5d78864.ctf.hacker101.com/" -w
 **Sin resultados relevantes**
 
 **Fuzzing de directorios y archivos recursivo**
+
 **Herramienta**: ffuf
+
 **Diccionario**: `seclists/Discovery/Web-Content/common.txt`
 
 ```bash
@@ -358,9 +371,11 @@ Server: openresty/1.27.1.2
 ```
 
 **Observaciones**
+
 Existe un formulario en el mismo endpoint via POST. El form acepta markdown.
 
 **Formulario de creación de página**
+
 Campos: title, body
 
 #### Pruebas al form `/page/create`
@@ -424,6 +439,7 @@ Server: openresty/1.27.1.2
 ```
 
 **Observaciones**
+
 En ambas pruebas se crean las páginas.
 
 **Acceso a las páginas 9 y 10**
@@ -491,6 +507,7 @@ Server: openresty/1.27.1.2
 ```
 
 **Observaciones**
+
 - No se observa una inyección XSS para el payload `<form src='javascript:alert(1)'>`.
 - Se encontró el endpoint GET `page/edit/id`.
 
@@ -944,9 +961,11 @@ Server: openresty/1.27.1.2
 </html>
 ```
 **Flag encontrada**
+
 `^FLAG^ef1e891cb8ed7596cdbefe17afc9a2e4ac865eb368c084e5887555caf11f9b1b$FLAG$`
 
 **Intento de acceso a página protegida**
+
 Se probaron los headers:
 - `Authorization: Bearer <FLAG>`
 - `Authorization: Basic <FLAG>`
@@ -1060,6 +1079,7 @@ Server: openresty/1.27.1.2
 ```
 
 **SQLi**
+
 Payload: `'`
 
 ```HTTP
@@ -1083,10 +1103,13 @@ Server: openresty/1.27.1.2
 ```
 
 **Flag encontrada**
+
 `^FLAG^6e95e97eb4bc6738b440562a9992f418449c11d172851a9b2323466ace0a8ccd$FLAG$`
 
 **XSS**
+
 Payload: `<form src='javascript:alert(1);'>`
+
 Como URL encoded: `%3Cform%20src%3D%27javascript%3Aalert%281%29%3B%27%3E`
 
 ```HTTP
@@ -1206,6 +1229,7 @@ Server: openresty/1.27.1.2
 ```
 
 **XSS en parámetros**
+
 1. Payload: `<script>alert(1);</script>`
 ```HTTP
 POST /page/edit/1 HTTP/1.1
@@ -1395,6 +1419,7 @@ Server: openresty/1.27.1.2
 ```
 
 **Flag encontrada**
+
 `^FLAG^0ec0cf27b597a2f5f976a7c260031e1a3f355c5dcba5bc9a012d70550f9cdd20$FLAG$`
 
 **Consulta de métodos HTTP a `/page/id/edit`**
